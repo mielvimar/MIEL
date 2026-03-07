@@ -5,6 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>MIELVIMAR Argentina | Venta de Miel</title>
 <style>
+    /* Input Código Postal y Dirección */
+    .cp-input, .address-input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  .shipping-info {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f0e84a70;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #333;
+  }
   :root {
     --primary: #f4c430;
     --secondary: #d4a017;
@@ -442,6 +459,78 @@
     opacity: 1;
     bottom: 55px;
   }
+  /* Botón Flotante WhatsApp */
+  .float-wa {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 25px;
+    left: 25px;
+    background-color: #25D366;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 2px 2px 3px #999;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .float-wa:hover { transform: scale(1.1); }
+  
+  /* Sección Sobre Nosotros */
+  .about-section {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    text-align: center;
+  }
+  .about-section h2 { color: #f4c430; margin-bottom: 1rem; }
+  .about-section p { max-width: 800px; margin: 0 auto 1rem auto; line-height: 1.6; }
+  
+  /* Sección Testimonios */
+  .testimonials-section {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    text-align: center;
+  }
+  .testimonials-section h2 { color: #f4c430; margin-bottom: 1rem; }
+  .testimonial-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ccc;
+    margin: 10px;
+    display: inline-block;
+    max-width: 300px;
+  }
+  .testimonial-author {
+    font-weight: bold;
+    color: #f4c430;
+    margin-top: 10px;
+    display: block;
+  }
+  
+  /* Input Código Postal */
+  .cp-input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  .shipping-info {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f0e84a70;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #333;
+  }
 </style>
 </head>
 <body>
@@ -474,6 +563,9 @@
   <div>
     <h3>ENVIOS 🛻</h3>
     <p>POR FLETE A TODO CABA Y PROVINCIA</p>
+  </ul>
+</div>
+<!-- FIN: Nuevos Costos de Envío -->
   </div>
 </section>
 
@@ -505,8 +597,20 @@
     <div class="cart-total" style="text-align:right; font-weight:bold; margin-top:10px;">
       Total: <span id="cart-total-price">$ 0</span>
     </div>
+        <!-- Campos Código Postal y Dirección -->
+        <div style="margin-top: 15px;">
+          <label for="cp-input" style="font-weight: bold;">Código Postal:</label>
+          <input type="text" id="cp-input" class="cp-input" placeholder="Ej: 1425" />
+        </div>
+        <div style="margin-top: 10px;">
+          <label for="address-input" style="font-weight: bold;">Dirección de entrega:</label>
+          <input type="text" id="address-input" class="address-input" placeholder="Ej: Av. Corrientes 1234" />
+        </div>
+        <div id="shipping-info" class="shipping-info" style="display: none;">
+          Envío: $0
+        </div>
     <button id="btn-pagar" class="btn-checkout" onclick="checkout()" aria-label="Pagar por WhatsApp">Pagar por WhatsApp</button>
-    <button id="btn-mp" class="btn-mp" onclick="checkoutMP()" aria-label="Pagar con Mercado Pago">Pagar con Mercado Pago</button>
+    
   </div>
 </div>
 
@@ -535,27 +639,43 @@
 <div id="toast" role="alert" aria-live="assertive" aria-atomic="true" aria-relevant="text"></div>
 
 <script>
-  const productos = {
-    mayorista: [
-      { id:'M10', nombre:'Miel 10kg', precio: 135000,
-        img:'https://imgur.com/qmPYFzv.jpg',
-        peso: '10kg' },
-      { id:'M20', nombre:'Miel 20kg', precio: 280000,
-        img:'https://i.imgur.com/DSSulS9.jpg',
-        peso: '20kg' }
-    ],
-    minorista: [
-      { id:'m2', nombre:'Miel 500g', precio: 7500,
-        img:'https://i.imgur.com/yh2CstB.jpg',
-        peso: '500g' },
-      { id:'m3', nombre:'Miel 250g', precio: 3500,
-        img:'https://i.imgur.com/i5c4nLz.jpg',
-        peso: '250g' },
-      { id:'m1', nombre:'Miel 1kg', precio: 15000,
-        img:'https://i.imgur.com/U8foRii.jpg',
-        peso: '1kg' }
-    ]
-  };
+ const productos = {
+  mayorista: [
+    { id:'M10', nombre:'Miel 10kg', precio: 32700,
+      img:'https://imgur.com/qmPYFzv.jpg',
+      peso: '10kg' },
+    { id:'M20', nombre:'Miel 20kg', precio: 60000,
+      img:'https://i.imgur.com/DSSulS9.jpg',
+      peso: '20kg' },
+    { id:'M21', nombre:'Botella de vidrio caja', precio: 28000,
+      img:'https://imgur.com/qmPYFzv.jpg',
+      peso: 'caja' }
+  ],
+  minorista: [
+    { id:'m1', nombre:'Miel 1kg', precio: 3270,
+      img:'https://imgur.com/U8foRii.jpg',
+      peso: '1kg' },
+    { id:'m2', nombre:'Miel 500g', precio: 1900,
+      img:'https://i.imgur.com/yh2CstB.jpg',
+      peso: '500g' },
+    { id:'m3', nombre:'Miel 250g', precio: 1500,
+      img:'https://i.imgur.com/i5c4nLz.jpg',
+      peso: '250g' },
+    { id:'m4', nombre:'Miel granel', precio: 2900,
+      img:'https://imgur.com/qmPYFzv.jpg',
+      peso: 'granel' },
+    { id:'m5', nombre:'Miel panal', precio: 3100,
+      img:'https://imgur.com/qmPYFzv.jpg',
+      peso: 'panal' },
+    { id:'m6', nombre:'Miel carpincho', precio: 1000,
+      img:'https://imgur.com/qmPYFzv.jpg',
+      peso: '100ml' },
+    { id:'m7', nombre:'Miel con carpincho', precio: 1350,
+      img:'https://imgur.com/qmPYFzv.jpg',
+      peso: '250ml' }
+  ]
+};
+    ;
 
   let carrito = [];
 
@@ -739,7 +859,151 @@
   }
 
   showSection('minorista');
-</script>
+  // --- CÓDIGO POSTAL Y ENVÍO AUTOMÁTICO ---
+  let cp = localStorage.getItem('cp_mielvimar') || '';
+  let shippingCost = 0;
 
+  function calculateShipping(cp) {
+    if (!cp) return 0;
+    const cpNum = parseInt(cp);
+    if (isNaN(cpNum)) return 0;
+    
+    // Lógica simple: CABA (1xxx) = $5000, GBA (2xxx) = $8000, Resto = $12000
+    if (cpNum >= 1000 && cpNum <= 1999) return 5000;
+    if (cpNum >= 2000 && cpNum <= 2999) return 8000;
+    return 12000;
+  }
+
+  function updateShippingDisplay() {
+    const shippingInfo = document.getElementById('shipping-info');
+    if (shippingInfo) {
+      shippingInfo.textContent = `Envío: $${shippingCost.toLocaleString('es-AR')}`;
+    }
+  }
+
+  // --- MENSAJE WHATSAPP MEJORADO ---
+  function checkout() {
+    if(carrito.length === 0) {
+      alert("Tu carrito está vacío.");
+      return;
+    }
+    
+    const cpInput = document.getElementById('cp-input');
+    const address = document.getElementById('address-input');
+    const cp = cpInput ? cpInput.value : '';
+    const addr = address ? address.value : '';
+    
+    if (!cp || !addr) {
+      alert("Por favor, ingresa tu Código Postal y Dirección para calcular el envío.");
+      return;
+    }
+    
+    shippingCost = calculateShipping(cp);
+    const total = carrito.reduce((sum, p) => sum + p.precio, 0) + shippingCost;
+    
+    let mensaje = "Hola MIELVIMAR, quiero pedir:%0A";
+    mensaje += "--------------------------------%0A";
+    carrito.forEach(p => {
+      mensaje += `- ${p.nombre} (${p.peso})%0A`;
+    });
+    mensaje += "--------------------------------%0A";
+    mensaje += `Total Productos: $ ${carrito.reduce((sum, p) => sum + p.precio, 0).toLocaleString('es-AR')}%0A`;
+    mensaje += `Envío: $ ${shippingCost.toLocaleString('es-AR')}%0A`;
+    mensaje += `Total Final: $ ${total.toLocaleString('es-AR')}%0A`;
+    mensaje += `--------------------------------%0A`;
+    mensaje += `📍 Dirección: ${addr}%0A`;
+    mensaje += `📮 Código Postal: ${cp}%0A`;
+    mensaje += `🕒 Horario preferido: 9 a 18hs`;
+    
+    window.open(`https://wa.me/5491135852572?text=${mensaje}`, '_blank');
+  }
+
+  // --- CARRITO PERSISTENTE (localStorage) ---
+  function loadCartFromStorage() {
+    const savedCart = localStorage.getItem('carrito_mielvimar');
+    if (savedCart) {
+      carrito = JSON.parse(savedCart);
+      updateCartUI();
+    }
+  }
+
+  function saveCartToStorage() {
+    localStorage.setItem('carrito_mielvimar', JSON.stringify(carrito));
+  }
+
+  // --- INICIALIZAR ---
+  showSection('minorista');
+  loadCartFromStorage();
+  
+  // --- EVENT LISTENER PARA CP ---
+  document.addEventListener('DOMContentLoaded', function() {
+    const cpInput = document.getElementById('cp-input');
+    const addressInput = document.getElementById('address-input');
+    
+    if (cpInput) {
+      cpInput.value = cp;
+      cpInput.addEventListener('input', function() {
+        cp = this.value;
+        localStorage.setItem('cp_mielvimar', cp);
+        shippingCost = calculateShipping(cp);
+        updateShippingDisplay();
+        updateCartUI();
+      });
+    }
+    
+    if (addressInput) {
+      addressInput.addEventListener('input', function() {
+        localStorage.setItem('address_mielvimar', this.value);
+      });
+    }
+  });
+  document.addEventListener('DOMContentLoaded', function() {
+  const cpInput = document.getElementById('cp-input');
+  const addressInput = document.getElementById('address-input');
+
+  if (cpInput) {
+    cpInput.value = cp;
+    cpInput.addEventListener('input', function() {
+      cp = this.value;
+      localStorage.setItem('cp_mielvimar', cp);
+      shippingCost = calculateShipping(cp);
+      updateShippingDisplay();
+      updateCartUI();
+    });
+  }
+
+  if (addressInput) {
+    addressInput.addEventListener('input', function() {
+      localStorage.setItem('address_mielvimar', this.value);
+    });
+  }
+});
+</script>
+  <!-- Botón Flotante WhatsApp -->
+  <div class="float-wa" onclick="window.open('https://wa.me/5491135852572', '_blank')" aria-label="Contacto WhatsApp">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+    </svg>
+  </div>
+
+  <!-- Sección Sobre Nosotros -->
+  <section class="about-section">
+    <h2>Sobre Nosotros</h2>
+    <p>En MIELVIMAR nos dedicamos a producir miel 100% natural, directamente de la colmena. Sin procesos artificiales, sin aditivos. Trabajamos con apicultores locales para garantizar la mejor calidad y frescura en cada producto.</p>
+    <p><strong>Garantía de satisfacción:</strong> Si tu producto llega dañado, te lo reponemos sin cargo.</p>
+  </section>
+
+  <!-- Sección Testimonios -->
+  <section class="testimonials-section">
+    <h2>Lo que dicen nuestros clientes</h2>
+    <div class="testimonial-card">
+      <p>"La mejor miel que probé, muy pura y dulce. El envío fue rápido."</p>
+      <span class="testimonial-author">- María G.</span>
+    </div>
+    <div class="testimonial-card">
+      <p>"Excelente servicio, la miel llegó en perfecto estado. Repetiré seguro."</p>
+      <span class="testimonial-author">- Carlos R.</span>
+    </div>
+  </section>
 </body>
 </html>
